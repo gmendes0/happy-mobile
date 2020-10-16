@@ -1,17 +1,27 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, StyleSheet, Dimensions, Text } from "react-native";
 
 import { useNavigation } from "@react-navigation/native";
 import { RectButton } from "react-native-gesture-handler";
-import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
+import MapView, {
+  LatLng,
+  MapEvent,
+  Marker,
+  PROVIDER_GOOGLE,
+} from "react-native-maps";
 
 import mapMarkerImg from "../../../assets/map-marker.png";
 
 const SelectMapPosition: React.FC = () => {
   const navigation = useNavigation();
+  const [position, setPosition] = useState<LatLng>();
 
   function handleNextStep() {
-    navigation.navigate("OrphanageData");
+    navigation.navigate("OrphanageData", { position });
+  }
+
+  function handleSelectMapPosition(event: MapEvent) {
+    setPosition(event.nativeEvent.coordinate);
   }
 
   return (
@@ -19,22 +29,30 @@ const SelectMapPosition: React.FC = () => {
       <MapView
         provider={PROVIDER_GOOGLE}
         initialRegion={{
-          latitude: -27.2092052,
-          longitude: -49.6401092,
+          latitude: -23.7659865,
+          longitude: -53.2934951,
           latitudeDelta: 0.008,
           longitudeDelta: 0.008,
         }}
         style={styles.mapStyle}
+        onPress={handleSelectMapPosition}
       >
-        <Marker
-          icon={mapMarkerImg}
-          coordinate={{ latitude: -27.2092052, longitude: -49.6401092 }}
-        />
+        {position && (
+          <Marker
+            icon={mapMarkerImg}
+            coordinate={{
+              latitude: position.latitude,
+              longitude: position.longitude,
+            }}
+          />
+        )}
       </MapView>
 
-      <RectButton style={styles.nextButton} onPress={handleNextStep}>
-        <Text style={styles.nextButtonText}>Próximo</Text>
-      </RectButton>
+      {position && (
+        <RectButton style={styles.nextButton} onPress={handleNextStep}>
+          <Text style={styles.nextButtonText}>Próximo</Text>
+        </RectButton>
+      )}
     </View>
   );
 };
