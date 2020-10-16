@@ -28,8 +28,6 @@ const OrphanagesMap: React.FC = () => {
     api.get("orphanages").then((response) => setOrphanages(response.data));
   }, []);
 
-  console.log(orphanages);
-
   function handleNavigateToOrphanageDetails(id: number) {
     navigation.navigate("OrphanageDetails", { id });
   }
