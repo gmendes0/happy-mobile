@@ -15,6 +15,7 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import { LatLng } from "react-native-maps";
 import * as ImagePicker from "expo-image-picker";
 import { api } from "../../../services/api";
+import { TextInputMask } from "react-native-masked-text";
 
 interface IOrphanageDataRouteParams {
   position: LatLng;
@@ -31,6 +32,7 @@ const OrphanageData: React.FC = () => {
   const [open_on_weekends, setOpenOnWeekends] = useState(false);
   const [opening_hours, setOpeningHours] = useState("");
   const [images, setImages] = useState<string[]>([]);
+  const [whatsapp, setWhatsapp] = useState("");
 
   async function handleCreateOrphanage() {
     const { latitude, longitude } = position;
@@ -44,6 +46,7 @@ const OrphanageData: React.FC = () => {
     data.append("opening_hours", opening_hours);
     data.append("latitude", latitude.toString());
     data.append("longitude", longitude.toString());
+    data.append("whatsapp", whatsapp.replace(/\D/g, ""));
 
     images.forEach((image, index) =>
       data.append("images", {
@@ -98,8 +101,20 @@ const OrphanageData: React.FC = () => {
         onChangeText={setAbout}
       />
 
-      {/* <Text style={styles.label}>Whatsapp</Text>
-      <TextInput style={styles.input} /> */}
+      <Text style={styles.label}>
+        Whatsapp{" "}
+        <Text style={styles.phoneExample}>(ex.: 55 44 91234 5678)</Text>
+      </Text>
+      <TextInputMask
+        style={styles.input}
+        type="custom"
+        options={{
+          mask: "+99 99 99999-9999",
+        }}
+        value={whatsapp}
+        onChangeText={setWhatsapp}
+        keyboardType="phone-pad"
+      />
 
       <Text style={styles.label}>Fotos</Text>
 
@@ -217,6 +232,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 32,
+  },
+
+  phoneExample: {
+    fontSize: 12,
   },
 
   switchContainer: {

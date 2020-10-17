@@ -36,6 +36,7 @@ interface IOrphanage {
   open_on_weekends: boolean;
   opening_hours: string;
   images: IImage[];
+  whatsapp: string;
 }
 
 const OrphanageDetails: React.FC = () => {
@@ -51,6 +52,14 @@ const OrphanageDetails: React.FC = () => {
   function handleOpenGoogleMapRoutes() {
     Linking.openURL(
       `https://www.google.com/maps/dir/?api=1&destination=${orphanage?.latitude},${orphanage?.longitude}`
+    );
+  }
+
+  function handleOpenWhatsapp() {
+    Linking.openURL(
+      `https://wa.me/${orphanage?.whatsapp}?text=${encodeURI(
+        "Olá, gostaria de fazer uma visita."
+      )}`
     );
   }
 
@@ -144,10 +153,10 @@ const OrphanageDetails: React.FC = () => {
           )}
         </View>
 
-        {/* <RectButton style={styles.contactButton} onPress={() => {}}>
+        <RectButton style={styles.contactButton} onPress={handleOpenWhatsapp}>
           <FontAwesome name="whatsapp" size={24} color="#FFF" />
           <Text style={styles.contactButtonText}>Entrar em contato</Text>
-        </RectButton> */}
+        </RectButton>
       </View>
     </ScrollView>
   );
